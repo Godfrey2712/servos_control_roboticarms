@@ -28,11 +28,11 @@ const byte JOYSTICK_A_PIN = A0;
 const byte JOYSTICK_B_PIN = 3;
 
 // set the direction for individual servo
-const byte SERVOS_IN_USE = 5;
+const byte SERVOS_IN_USE = 4;
 const boolean SERVO_REVERSE_FLAG[] = {1, 0, 0, 0, 0}; //set to one if servo should be reversed
 
-const long MIN_PULSE[] = {850, 850, 850, 850, 1000};
-const long MAX_PULSE[] = {2100, 2100, 2100, 2100, 2000};                     
+const long MIN_PULSE[] = {850, 850, 850, 850};
+const long MAX_PULSE[] = {2100, 2100, 2100, 2100};                     
 const long MIN_POT = 0;                        
 const long MAX_POT = 1023;                       
 const long POWER_OF_TWO_TO_AVERAGE = 4;          
@@ -60,7 +60,7 @@ const unsigned long SERVO_PERIOD = 20000;       // update servo at 50Hz
 
 const long LOW_CENTER_THRESHOLD = 477;     
 const long HIGH_CENTER_THRESHOLD = 515;    
-const long POT_TO_SPEED_CONSTANT = 8;           // regulate servo speed, higher value = slower speed.
+const long POT_TO_SPEED_CONSTANT = 20;           // regulate servo speed, higher value = slower speed.
 
 long averagingBuffer[SERVOS_IN_USE][BUFFER_SIZE];
 int bufferIndex = 0;
@@ -134,11 +134,11 @@ void checkDigitalReadTime()
 
   if (state == false) {
     state = true;
-    SERVO_B_PIN.write (270);
+    SERVO_B_PIN.write (70);
     delay (500);
   } else {
     state = false;
-    SERVO_B_PIN.write(0);
+    SERVO_B_PIN.write(22);
     delay(500);
   }
  }

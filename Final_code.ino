@@ -109,7 +109,6 @@ void loop()
   checkAnalogReadTime();  //calling analog read function below
   checkDigitalReadTime(); //calling digital read function below
   //inverseKinematics(0.16, 0.14, 1.0, 0.4);
-  delay(10);
 }
 
 void checkAnalogReadTime()
@@ -239,6 +238,7 @@ void debugServo(int servoIndex, long average, long servoOutput, long servoSpeed)
 }
 
 void inverseKinematics(float x, float y, float z, float orientationAngle) {
+  //Calculate angles
   float theta1 = atan2(x, y);
   Serial.println("Theta1: ");
   Serial.println(theta1);
@@ -252,7 +252,7 @@ void inverseKinematics(float x, float y, float z, float orientationAngle) {
   Serial.println("c3: ");
   Serial.println(c3);
 
-  float link3Angle =M_PI + atan2(sqrt(1 - pow(c3, 2.0)), c3);
+  float link3Angle = atan2(sqrt(1 - pow(c3, 2.0)), c3);
   Serial.println("linkAngle3: ");
   Serial.println(link3Angle);
   float link2Angle = atan2(((link3Length * c3 + link2Length) * p2) - (link3Length * p1 * sin(link3Angle)), (((link3Length * c3 + link2Length) * p1) + (link3Length * p2 * sin(link3Angle))));
@@ -261,6 +261,7 @@ void inverseKinematics(float x, float y, float z, float orientationAngle) {
   
   float gripperAngle = orientationAngle - link2Angle - link3Angle;
 
+  //Convert to degrees
   theta1 = theta1 * 180.0 / M_PI;
   link2Angle = link2Angle * 180.0 / M_PI; 
   link3Angle = (link3Angle - M_PI * 2) * 180.0 / M_PI; 
@@ -274,7 +275,8 @@ void inverseKinematics(float x, float y, float z, float orientationAngle) {
   Serial.println(link3Angle);
   Serial.println("Angle3:");
   Serial.println(gripperAngle);
-  
+
+  //Adjust to servo reference frames
   link2Angle = link2Angle + 90;
   if (link2Angle > 180) {
     link2Angle = link2Angle - 180;
@@ -284,6 +286,8 @@ void inverseKinematics(float x, float y, float z, float orientationAngle) {
   if (gripperAngle > 180) {
     gripperAngle = gripperAngle - 180;
   }
+
+  //Check valid for servos
   bool valid = true;
   if((0.0 >= theta1) || (theta1 >= 180.0)){
     Serial.println("1");
@@ -299,6 +303,8 @@ void inverseKinematics(float x, float y, float z, float orientationAngle) {
     valid = false;
     Serial.println("4");
   }
+
+  //Send angles if valid
   if (valid == true){
     servoPosition[0] = theta1;
     servoPosition[1] = link2Angle;
